@@ -1,0 +1,97 @@
+package com.bigdata.projectclock;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.os.SystemClock;
+import android.provider.MediaStore;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CalendarView;
+import android.widget.Chronometer;
+import android.widget.RadioButton;
+import android.widget.TextView;
+import android.widget.TimePicker;
+
+import java.util.Calendar;
+
+
+public class MainActivity extends Activity {
+
+    Chronometer timer;
+    Button btnStart, btnEnd;
+    RadioButton cal, time;
+    CalendarView calView;
+    TimePicker timePicker;
+    TextView yy, mm, dd, hh, mmm;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        setTitle("예약 어플리케이션");
+
+        timer = (Chronometer)findViewById(R.id.timer);
+        btnStart = (Button)findViewById(R.id.btnStart);
+        btnEnd = (Button)findViewById(R.id.btnEnd);
+        cal = (RadioButton)findViewById(R.id.cal);
+        time = (RadioButton)findViewById(R.id.time);
+        calView = (CalendarView)findViewById(R.id.calView);
+        timePicker = (TimePicker)findViewById(R.id.timePicker);
+        yy = (TextView)findViewById(R.id.yy);
+        mm = (TextView)findViewById(R.id.mm);
+        dd = (TextView)findViewById(R.id.dd);
+        hh = (TextView)findViewById(R.id.hh);
+        mmm = (TextView)findViewById(R.id.mmm);
+
+        cal.setVisibility(View.INVISIBLE);
+        time.setVisibility(View.INVISIBLE);
+        calView.setVisibility(View.INVISIBLE);
+        timePicker.setVisibility(View.INVISIBLE);
+
+        btnStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cal.setVisibility(View.VISIBLE);
+                time.setVisibility(View.VISIBLE);
+                calView.setVisibility(View.INVISIBLE);
+                timePicker.setVisibility(View.INVISIBLE);
+                timer.setBase(SystemClock.elapsedRealtime());
+                timer.start();
+            }
+        });
+
+        cal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                calView.setVisibility(View.VISIBLE);
+                timePicker.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                calView.setVisibility(View.INVISIBLE);
+                timePicker.setVisibility(View.VISIBLE);
+            }
+        });
+
+        btnEnd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                timer.stop();
+
+                java.util.Calendar myCal = java.util.Calendar.getInstance();
+                myCal.setTimeInMillis(calView.getDate());
+
+                yy.setText(Integer.toString(myCal.get(Calendar.YEAR)));
+                mm.setText(Integer.toString(1+myCal.get(Calendar.MONTH)));
+                dd.setText(Integer.toString(myCal.get(Calendar.DATE)));
+                hh.setText(Integer.toString(timePicker.getCurrentHour()));
+                mmm.setText(Integer.toString(timePicker.getCurrentMinute()));
+            }
+        });
+    }
+}
